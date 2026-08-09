@@ -5,7 +5,7 @@ import {
 } from "discord.js";
 import type { FastifyBaseLogger } from "fastify";
 
-import { discordClient } from "../index.js";
+import { discordClient } from "../lib/discord.js";
 /**
  * Service for handling server information logic.
  */
@@ -82,7 +82,21 @@ export interface ServerInfoService {
 export async function getServerInfoService(
     logger: FastifyBaseLogger,
 ): Promise<ServerInfoService> {
+      if(!discordClient){
+      logger.warn("Cannot fetch discord server data while no discord client is present.");
+      return {
+        success: false
+      };
+    }
+
     async function fetchDiscordData(): Promise<FetchDiscordData> {
+        if(!discordClient){
+            logger.warn("Cannot fetch discord server data while no discord client is present.");
+            return {
+              success: false
+            };
+        }
+
         const guildId = process.env.DISCORD_GUILD_ID;
         if (!guildId) {
             logger.error(`No guild id provided in .env file.`);

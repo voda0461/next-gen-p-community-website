@@ -1,5 +1,5 @@
 import type { FastifyPluginAsync, FastifySchema } from "fastify";
-import { redis } from "../index.js";
+import { redis } from "../lib/redis.js";
 import { getServerInfoService } from "../services/server-info.service.js";
 
 /**
@@ -175,13 +175,15 @@ const serverInfoRoutes: FastifyPluginAsync = async fastify => {
                 const cacheKey: string = "server:info";
 
                 let cachedData: string | null = null;
-                try {
-                    cachedData = await redis.get(cacheKey);
-                } catch (err) {
-                    request.log.warn(
+                if (redis && redis.status === "ready") {
+                  try {
+                      cachedData = await redis.get(cacheKey);
+                  } catch (err) {
+                      request.log.warn(
                         err,
-                        "Redis cache read failed, falling back to service execution",
+                      "Redis cache read failed, falling back to service execution",
                     );
+                }
                 }
 
                 if (cachedData) {
@@ -202,7 +204,7 @@ const serverInfoRoutes: FastifyPluginAsync = async fastify => {
 
                     const data = info.data;
 
-                    if (redis.status === "ready") {
+                    if (redis && redis.status === "ready") {
                         try {
                             await redis.set(
                                 cacheKey,

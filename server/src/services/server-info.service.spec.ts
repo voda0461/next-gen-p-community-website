@@ -9,15 +9,17 @@ import type { FastifyBaseLogger } from "fastify";
 import { getServerInfoService } from "./server-info.service.js";
 
 // Mock the discordClient module
-vi.mock("../index.js", () => ({
+vi.mock("../lib/discord.js", () => ({
     discordClient: {
+      isReady: vi.fn().mockReturnValue(true),
         guilds: {
             fetch: vi.fn(),
         },
     },
 }));
 
-import { discordClient } from "../index.js";
+import { discordClient } from "../lib/discord.js";
+const mockDiscordClient = discordClient!;
 
 describe("getServerInfoService", () => {
     let mockLogger: FastifyBaseLogger;
@@ -55,7 +57,7 @@ describe("getServerInfoService", () => {
     it("should return success: false if guild is not found", async () => {
         process.env.DISCORD_GUILD_ID = "123456789";
         vi.mocked(
-            discordClient.guilds.fetch as (id: string) => Promise<Guild>,
+            mockDiscordClient.guilds.fetch as (id: string) => Promise<Guild>,
         ).mockResolvedValueOnce(null as unknown as Guild);
 
         const result = await getServerInfoService(mockLogger);
@@ -69,7 +71,7 @@ describe("getServerInfoService", () => {
     it("should handle error thrown by discord client fetch", async () => {
         process.env.DISCORD_GUILD_ID = "123456789";
         const fetchError = new Error("Discord API Rate Limit");
-        vi.mocked(discordClient.guilds.fetch).mockRejectedValueOnce(fetchError);
+        vi.mocked(mockDiscordClient.guilds.fetch).mockRejectedValueOnce(fetchError);
 
         const result = await getServerInfoService(mockLogger);
 
@@ -182,7 +184,7 @@ describe("getServerInfoService", () => {
         };
 
         vi.mocked(
-            discordClient.guilds.fetch as (id: string) => Promise<Guild>,
+            mockDiscordClient.guilds.fetch as (id: string) => Promise<Guild>,
         ).mockResolvedValueOnce(mockGuild as unknown as Guild);
 
         const result = await getServerInfoService(mockLogger);

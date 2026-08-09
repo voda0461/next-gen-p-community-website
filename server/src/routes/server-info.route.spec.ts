@@ -8,10 +8,10 @@ import {
 } from "vitest";
 import Fastify, { type FastifyInstance } from "fastify";
 import serverInfoRoutes from "./server-info.route.js";
-import { redis } from "../index.js";
+import { redis } from "../lib/redis.js";
 import { getServerInfoService } from "../services/server-info.service.js";
 
-vi.mock("../index.js", () => ({
+vi.mock("../lib/redis.js", () => ({
     redis: {
         status: "ready",
         get: vi.fn(),
@@ -23,8 +23,10 @@ vi.mock("../services/server-info.service.js", () => ({
     getServerInfoService: vi.fn(),
 }));
 
-const mockedRedisGet = redis.get as MockedFunction<typeof redis.get>;
-const mockedRedisSet = redis.set as MockedFunction<typeof redis.set>;
+type NonNullRedis = NonNullable<typeof redis>;
+
+const mockedRedisGet = (redis as NonNullRedis).get as MockedFunction<NonNullRedis["get"]>;
+const mockedRedisSet = (redis as NonNullRedis).set as MockedFunction<NonNullRedis["set"]>;
 const mockedGetServerInfoService = getServerInfoService as MockedFunction<
     typeof getServerInfoService
 >;

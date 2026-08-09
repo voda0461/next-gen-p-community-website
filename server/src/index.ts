@@ -6,55 +6,25 @@ import swaggerUi from '@fastify/swagger-ui'
 import { PrismaClient } from './generated/prisma/client.js'
 import { PrismaPg } from '@prisma/adapter-pg'
 import pg from 'pg'
-import { Client, GatewayIntentBits } from 'discord.js';
-import { Redis } from "ioredis";
+
+import { connectRedis } from "./lib/redis.js";
+import { connectDiscord, disconnectDiscord } from "./lib/discord.js";
 
 import serverInfoRoute from "./routes/server-info.route.js"
 
-// discord client setup
-export const discordClient = new Client({
-    intents: [
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMembers,
-        GatewayIntentBits.GuildPresences,
-        GatewayIntentBits.GuildVoiceStates,
-        GatewayIntentBits.GuildScheduledEvents,
-    ],
-});
-
-const fastify = Fastify({ logger: true })
+const fastify = Fastify({ logger: true, pluginTimeout: 30000 })
 const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL })
 const adapter = new PrismaPg(pool)
 const prisma = new PrismaClient({ adapter })
+
 // connect and destroy discord bot automaticly
 fastify.addHook("onReady", async () => {
-    fastify.log.info("Connecting Discord Bot Client to Gateway...");
-    await discordClient.login(process.env.DISCORD_BOT_TOKEN);
-    fastify.log.info(`Discord Bot logged in as ${discordClient.user?.tag}`);
+    await connectRedis(fastify.log);
+    await connectDiscord(fastify.log);
 });
 
 fastify.addHook("onClose", async () => {
-    fastify.log.info("Disconnecting Discord Bot Client...");
-    discordClient.destroy();
-    fastify.log.info("Discord Bot Client disconnected.");
-});
-
-// redis setup
-export const redis = new Redis(
-    process.env.REDIS_URL ?? "redis://localhost:6379",
-    {
-        maxRetriesPerRequest: 3,
-        enableOfflineQueue: false,
-        enableReadyCheck: true,
-    },
-);
-
-redis.on("connect", () => {
-    fastify.log.info("Connected to Redis successfully");
-});
-
-redis.on("error", err => {
-    fastify.log.error(err, "Redis Connection Error.");
+    await disconnectDiscord(fastify.log);
 });
 
 // Register Plugins
