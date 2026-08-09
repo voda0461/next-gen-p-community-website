@@ -1,6 +1,6 @@
 # NEXT-GEN Programmers — Community Website
 
-[![Docker CI](https://github.com/NEXT-GEN-PROGRAMMING/community-website/actions/workflows/docker.yml/badge.svg)](https://github.com/NEXT-GEN-PROGRAMMING/community-website/actions/workflows/ci.yml)
+[![CI Checks](https://github.com/NEXT-GEN-PROGRAMMING/community-website/actions/workflows/ci.yml/badge.svg)](https://github.com/NEXT-GEN-PROGRAMMING/community-website/actions/workflows/ci.yml)
 [![Docker CI](https://github.com/NEXT-GEN-PROGRAMMING/community-website/actions/workflows/docker.yml/badge.svg)](https://github.com/NEXT-GEN-PROGRAMMING/community-website/actions/workflows/docker.yml)
 [![PR Checks](https://github.com/NEXT-GEN-PROGRAMMING/community-website/actions/workflows/pr-checks.yml/badge.svg)](https://github.com/NEXT-GEN-PROGRAMMING/community-website/actions/workflows/pr-checks.yml)
 
