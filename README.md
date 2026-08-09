@@ -5,8 +5,7 @@
 [![PR Checks](https://github.com/NEXT-GEN-PROGRAMMING/community-website/actions/workflows/pr-checks.yml/badge.svg)](https://github.com/NEXT-GEN-PROGRAMMING/community-website/actions/workflows/pr-checks.yml)
 
 > [!WARNING] 
-> **Legacy Code — Draft v0.1**
-> This is the initial commit and foundational draft of the NEXT-GEN Programmers website. Everything here is a starting point. Contributors and participants are free — and encouraged — to improve, refactor, and expand upon this codebase.
+> NEXT-GEN Programmers is an actively growing project, and the website is continuously evolving alongside the community. The codebase is still a work in progress and may not yet represent its full potential. Contributors and participants are encouraged to improve, refactor, experiment with, and expand upon the existing codebase as the project continues to grow.
 
 ---
 
@@ -242,14 +241,6 @@ We welcome contributions from everyone! Please read our **[Contributing Guide](C
 ## 📜 License
 
 This project is open source and available under the [MIT License](LICENSE).
-
----
-
-## 📌 Final Note
-
-This document — and this codebase — is intended as a **starting point for discussion** rather than a fixed specification. Every member is encouraged to suggest improvements, challenge ideas, and contribute to the design and development process.
-
-**This is legacy code. Make it better.** 🚀
 
 ---
 
