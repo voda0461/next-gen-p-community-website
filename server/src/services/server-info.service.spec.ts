@@ -79,7 +79,7 @@ describe("getServerInfoService", () => {
         expect(result).toEqual({ success: false });
         expect(mockLogger.error).toHaveBeenCalledWith(
             fetchError,
-            "Something happend wrong when fetching data from discord.",
+            "Something happened wrong when fetching data from discord.",
         );
     });
 
