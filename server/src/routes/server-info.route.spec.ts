@@ -217,4 +217,27 @@ describe("GET /server-info", () => {
             message: "Internal Server Error",
         });
     });
+
+    it("should skip redis completely when redis status is not ready", async () => {
+      // Temporarily mutate status
+      (redis as NonNullRedis).status = "connecting";
+
+      mockedGetServerInfoService.mockResolvedValueOnce({
+        success: true,
+        data: mockServerData,
+      });
+
+      const response = await app.inject({
+        method: "GET",
+        url: "/server-info",
+      });
+
+      expect(response.statusCode).toBe(200);
+      expect(mockedRedisGet).not.toHaveBeenCalled();
+      expect(mockedRedisSet).not.toHaveBeenCalled();
+      expect(mockedGetServerInfoService).toHaveBeenCalledOnce();
+
+      // Restore status
+      (redis as NonNullRedis).status = "ready";
+});
 });
