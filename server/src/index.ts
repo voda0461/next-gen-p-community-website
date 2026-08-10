@@ -12,10 +12,32 @@ import { connectDiscord, disconnectDiscord } from "./lib/discord.js";
 
 import serverInfoRoute from "./routes/server-info.route.js"
 
+function isValidSnowflake(id:string): boolean {
+    return /^(?<id>\d{17,20})$/.test(id);
+}
+
 const fastify = Fastify({ logger: true, pluginTimeout: 30000 })
 const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL })
 const adapter = new PrismaPg(pool)
-const prisma = new PrismaClient({ adapter })
+const prisma = new PrismaClient({ adapter });
+
+
+// validate guild id
+(() => {
+    if (!process.env.DISCORD_GUILD_ID || process.env.DISCORD_GUILD_ID.trim() === "") {
+        fastify.log.warn(
+            "No DISCORD_GUILD_ID provided, some functions may not work properly.",
+        );
+        return;
+    }
+    if (!isValidSnowflake(process.env.DISCORD_GUILD_ID)) {
+        fastify.log.fatal(
+            "Invalid discord guild id provided in DISCORD_GUILD_ID. Please provide a valid discord guild id or leave it empty. Exiting process.",
+        );
+        process.exit(1);
+    }
+    return;
+})();
 
 // connect and destroy discord bot automaticly
 fastify.addHook("onReady", async () => {
