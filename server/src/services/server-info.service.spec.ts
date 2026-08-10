@@ -4,6 +4,7 @@ import {
     GuildScheduledEventStatus,
     GuildScheduledEventEntityType,
     type Guild,
+    type Client,
 } from "discord.js";
 import type { FastifyBaseLogger } from "fastify";
 import { getServerInfoService } from "./server-info.service.js";
@@ -18,8 +19,8 @@ vi.mock("../lib/discord.js", () => ({
     },
 }));
 
-import { discordClient } from "../lib/discord.js";
-const mockDiscordClient = discordClient!;
+import * as discordModule from "../lib/discord.js";
+const mockDiscordClient = discordModule.discordClient!;
 
 describe("getServerInfoService", () => {
     let mockLogger: FastifyBaseLogger;
@@ -229,4 +230,18 @@ describe("getServerInfoService", () => {
             });
         }
     });
+
+    it("should return success: false when discordClient is null", async () => {
+      vi.spyOn(discordModule, "discordClient", "get").mockReturnValue(
+        null as unknown as Client,
+      );
+
+      const result = await getServerInfoService(mockLogger);
+
+      expect(result).toEqual({ success: false });
+      expect(mockLogger.warn).toHaveBeenCalledWith(
+          "Cannot fetch discord server data while no discord client is present.",
+      );
+    });
+
 });
