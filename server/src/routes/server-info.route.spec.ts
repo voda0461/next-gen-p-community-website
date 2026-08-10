@@ -58,7 +58,7 @@ describe("GET /server-info", () => {
             forum: 0,
         },
         created: {
-            timestamp: "2023-01-01T00:00:00.000Z",
+            timestamp: "1754836800",
             ageInDays: 365,
         },
         scheduledEvents: [],
