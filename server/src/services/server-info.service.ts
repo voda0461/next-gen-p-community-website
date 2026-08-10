@@ -259,7 +259,7 @@ export async function getServerInfoService(
         } catch (err) {
             logger.error(
                 err,
-                "Something happened wrong when fetching data from discord.",
+                "Something went wrong when fetching data from discord.",
             );
             return {
                 success: false,

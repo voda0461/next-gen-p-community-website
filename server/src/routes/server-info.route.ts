@@ -7,7 +7,7 @@ import { getServerInfoService } from "../services/server-info.service.js";
  */
 const getServerInfoSchema: FastifySchema = {
     description:
-        "Fetch discord guild informations from the guild id provided in .env and cache it for 5 mins.",
+        "Fetch discord guild information from the guild id provided in .env and cache it for 5 mins.",
     tags: ["Server Info"],
     response: {
         200: {

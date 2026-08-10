@@ -39,7 +39,7 @@ const prisma = new PrismaClient({ adapter });
     return;
 })();
 
-// connect and destroy discord bot automaticly
+// connect and destroy discord bot automatically
 fastify.addHook("onReady", async () => {
     await connectRedis(fastify.log);
     await connectDiscord(fastify.log);
